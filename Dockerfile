@@ -51,6 +51,13 @@ COPY assets/runtime/ ${REDMINE_RUNTIME_ASSETS_DIR}/
 
 COPY assets/tools/ /usr/bin/
 
+#aglotov: Install patches
+COPY assets/patch/ ${REDMINE_INSTALL_DIR}/
+
+RUN patch ${REDMINE_INSTALL_DIR}/app/models/custom_field.rb < ${REDMINE_INSTALL_DIR}/custom_field.rb.patch \
+    && patch ${REDMINE_INSTALL_DIR}/app/models/issue.rb < ${REDMINE_INSTALL_DIR}/issue.rb.patch
+#end install patches
+
 COPY entrypoint.sh /sbin/entrypoint.sh
 
 RUN chmod 755 /sbin/entrypoint.sh

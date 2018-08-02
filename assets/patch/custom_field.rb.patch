@@ -1,0 +1,12 @@
+--- custom_field.rb	2018-06-10 09:36:03.000000000 +0300
++++ custom_field_new.rb	2018-08-02 14:56:57.291053472 +0300
+@@ -15,6 +15,9 @@
+ # along with this program; if not, write to the Free Software
+ # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ 
++#Xelon: custom field id for adjust visibility issues 
++WHO_CAN_SEE_ID = 21
++
+ class CustomField < ActiveRecord::Base
+   include Redmine::SafeAttributes
+   include Redmine::SubclassFactory

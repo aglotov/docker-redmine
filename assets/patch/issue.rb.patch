@@ -1,0 +1,22 @@
+--- issue.rb	2018-06-10 09:36:04.000000000 +0300
++++ issue_new.rb	2018-08-02 15:35:25.091050211 +0300
+@@ -129,7 +129,9 @@
+           "(#{table_name}.is_private = #{connection.quoted_false} OR #{table_name}.author_id = #{user.id} OR #{table_name}.assigned_to_id IN (#{user_ids.join(',')}))"
+         when 'own'
+           user_ids = [user.id] + user.groups.map(&:id).compact
+-          "(#{table_name}.author_id = #{user.id} OR #{table_name}.assigned_to_id IN (#{user_ids.join(',')}))"
++          "(#{table_name}.author_id = #{user.id} OR #{table_name}.assigned_to_id IN (#{user_ids.join(',')})) OR " +
++          "(SELECT COUNT(id) FROM #{CustomValue.table_name} WHERE #{CustomValue.table_name}.customized_id = issues.id AND " +
++          "#{CustomValue.table_name}.custom_field_id = #{CustomField::WHO_CAN_SEE_ID} AND #{CustomValue.table_name}.value = #{user.id}) > 0"
+         else
+           '1=0'
+         end
+@@ -158,7 +160,7 @@
+         when 'default'
+           !self.is_private? || (self.author == user || user.is_or_belongs_to?(assigned_to))
+         when 'own'
+-          self.author == user || user.is_or_belongs_to?(assigned_to)
++          self.author == user || user.is_or_belongs_to?(assigned_to) || custom_field_value(CustomField::WHO_CAN_SEE_ID).include?(user.id.to_s)
+         else
+           false
+         end
